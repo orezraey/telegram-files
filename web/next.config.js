@@ -6,6 +6,7 @@ import "./src/env.js";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'export',
   experimental: {
     cpus: 1,
     workerThreads: false,
