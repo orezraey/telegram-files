@@ -76,6 +76,7 @@ export function FileTable({
   link,
 }: FileTableProps) {
   const [selectedFiles, setSelectedFiles] = useState<Set<number>>(new Set());
+  const [lastClickedIndex, setLastClickedIndex] = useState<number | null>(null);
   const tableParentRef = useRef(null);
   const [columns, setColumns] = useState<Column[]>(COLUMNS);
   const [rowHeight, setRowHeight] = useRowHeightLocalStorage(
@@ -176,14 +177,27 @@ export function FileTable({
     }
   };
 
-  const handleSelectFile = (fileId: number) => {
-    const newSelected = new Set(selectedFiles);
-    if (newSelected.has(fileId)) {
-      newSelected.delete(fileId);
+  const handleSelectFile = (fileId: number, index: number, shiftKey: boolean) => {
+    if (shiftKey && lastClickedIndex !== null) {
+      // Seleção em intervalo com SHIFT
+      const start = Math.min(lastClickedIndex, index);
+      const end = Math.max(lastClickedIndex, index);
+      const newSelected = new Set(selectedFiles);
+      for (let i = start; i <= end; i++) {
+        newSelected.add(files[i]!.id);
+      }
+      setSelectedFiles(newSelected);
     } else {
-      newSelected.add(fileId);
+      // Toggle individual (comportamento normal)
+      setLastClickedIndex(index);
+      const newSelected = new Set(selectedFiles);
+      if (newSelected.has(fileId)) {
+        newSelected.delete(fileId);
+      } else {
+        newSelected.add(fileId);
+      }
+      setSelectedFiles(newSelected);
     }
-    setSelectedFiles(newSelected);
   };
 
   return (
@@ -305,7 +319,7 @@ export function FileTable({
                       file={file}
                       updateField={updateField}
                       checked={selectedFiles.has(file.id)}
-                      onCheckedChange={() => handleSelectFile(file.id)}
+                      onCheckedChange={(checked, e) => handleSelectFile(file.id, virtualRow.index, e?.shiftKey ?? false)}
                       onFileClick={() => {
                         setCurrentViewFile(file);
                         setViewerOpen(true);

@@ -34,7 +34,7 @@ type FileRowProps = {
     };
     columns: Column[];
   };
-  onCheckedChange: (checked: boolean) => void;
+  onCheckedChange: (checked: boolean, e?: React.MouseEvent) => void;
   onFileClick: () => void;
 };
 
@@ -112,7 +112,14 @@ export default function FileRow({
     >
       <div className="flex w-full flex-1 items-center hover:bg-accent">
         <div className="w-[30px] text-center">
-          <Checkbox checked={checked} onCheckedChange={onCheckedChange} />
+          <div
+            onClick={(e) => {
+              onCheckedChange(!checked, e);
+            }}
+            className="inline-flex cursor-pointer"
+          >
+            <Checkbox checked={checked} onCheckedChange={() => {}} />
+          </div>
         </div>
         {columns.map((col) =>
           col.isVisible ? (
