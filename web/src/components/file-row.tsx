@@ -112,14 +112,11 @@ export default function FileRow({
     >
       <div className="flex w-full flex-1 items-center hover:bg-accent">
         <div className="w-[30px] text-center">
-          <div
-            onClick={(e) => {
-              onCheckedChange(!checked, e);
-            }}
-            className="inline-flex cursor-pointer"
-          >
-            <Checkbox checked={checked} onCheckedChange={() => {}} />
-          </div>
+          <Checkbox
+            checked={checked}
+            onCheckedChange={() => {}}
+            onClick={(e) => onCheckedChange(!checked, e)}
+          />
         </div>
         {columns.map((col) =>
           col.isVisible ? (
