@@ -4,9 +4,12 @@
  */
 import "./src/env.js";
 
-/** @type {import("next").NextConfig} */
-const config = {
-  output: "export",
+/** @type {import('next').NextConfig} */
+const nextConfig = {
+  experimental: {
+    cpus: 1,
+    workerThreads: false,
+  },
 };
 
-export default config;
+export default nextConfig;
