@@ -98,6 +98,14 @@ public class HttpVerticle extends AbstractVerticle {
     public Router initRouter() {
         Router router = Router.router(vertx);
 
+        // Register Basic Auth handler if credentials are configured
+        if (StrUtil.isNotBlank(Config.AUTH_USERNAME) && StrUtil.isNotBlank(Config.AUTH_PASSWORD)) {
+            log.info("Basic authentication is enabled");
+            router.route().handler(new BasicAuthHandler(Config.AUTH_USERNAME, Config.AUTH_PASSWORD));
+        } else {
+            log.info("Basic authentication is disabled (no credentials configured)");
+        }
+
         SessionStore sessionStore = LocalSessionStore.create(vertx, SESSION_COOKIE_NAME);
         SessionHandler sessionHandler = SessionHandler.create(sessionStore)
                 .setSessionCookieName(SESSION_COOKIE_NAME);
